@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logitrack_app/dashboard_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -43,7 +44,14 @@ class LoginPage extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DashboardPage(),
+                    ),
+                  );
+                },
                 child: const Text('LOGIN', style: TextStyle(fontSize: 18)),
               ),
             ),

@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:logitrack_app/dashboard_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool _isPasswordVisible = false;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +33,8 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
-            const TextField(
+            TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -31,11 +42,24 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            const TextField(
-              obscureText: true,
+            TextField(
+              controller: _passwordController,
+              obscureText: !_isPasswordVisible,
               decoration: InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -45,6 +69,9 @@ class LoginPage extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
+                  print('Email: ${_emailController.text}');
+                  print('Password: ${_passwordController.text}');
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

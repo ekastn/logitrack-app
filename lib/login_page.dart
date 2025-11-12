@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logitrack_app/dashboard_page.dart';
+import 'package:logitrack_app/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -68,9 +69,19 @@ class _LoginPageState extends State<LoginPage> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  print('Email: ${_emailController.text}');
-                  print('Password: ${_passwordController.text}');
+                onPressed: () async {
+                  final apiService = ApiService();
+
+                  try {
+                    final tasks = await apiService.fetchDeliveryTasks();
+
+                    print('Berhasil mengambil data: ${tasks.length} item.');
+                    if (tasks.isNotEmpty) {
+                      print('Judul data pertama: ${tasks.first.title}');
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
 
                   Navigator.push(
                     context,

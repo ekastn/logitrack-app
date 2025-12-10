@@ -1,29 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logitrack_app/auth_service.dart';
-import 'package:logitrack_app/dashboard_page.dart';
-import 'package:logitrack_app/register_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final AuthService _authService = AuthService();
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false;
-
+  final AuthService _authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('LogiTrack - Login'),
+        title: const Text('LogiTrack - Register'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -34,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(
-                Icons.local_shipping,
+                Icons.person_add,
                 size: 80,
                 color: Colors.blueAccent,
               ),
@@ -50,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
                   if (value == null || value.isEmpty) {
                     return 'Email tidak boleh kosong';
                   }
-
                   if (!RegExp(
                     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                   ).hasMatch(value)) {
@@ -64,9 +62,19 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: !_isPasswordVisible,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -74,6 +82,35 @@ class _LoginPageState extends State<LoginPage> {
                   }
                   if (value.length < 6) {
                     return 'Password minimal harus 6 karakter';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: !_isConfirmPasswordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                      });
+                    },
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Konfirmasi password tidak boleh kosong';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Password tidak cocok';
                   }
                   return null;
                 },
@@ -86,38 +123,33 @@ class _LoginPageState extends State<LoginPage> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      User? user = await _authService.signInWithEmailPassword(
+                      User? user = await _authService.registerWithEmailPassword(
                         _emailController.text,
                         _passwordController.text,
                       );
                       if (user != null) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const DashboardPage()),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Registrasi berhasil!')),
                         );
+                        Navigator.pop(context);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text(
-                                  'Login gagal. Periksa email dan password Anda.')),
+                                  'Registrasi gagal. Coba lagi nanti.')),
                         );
                       }
                     }
                   },
-                  child: const Text('LOGIN', style: TextStyle(fontSize: 18)),
+                  child: const Text('REGISTER', style: TextStyle(fontSize: 18)),
                 ),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterPage(),
-                    ),
-                  );
+                  Navigator.pop(context);
                 },
-                child: const Text('Belum punya akun? Register'),
+                child: const Text('Sudah punya akun? Login'),
               ),
             ],
           ),

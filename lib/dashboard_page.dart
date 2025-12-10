@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logitrack_app/auth_service.dart';
 import 'package:logitrack_app/models/delivery_task_model.dart';
 import 'package:logitrack_app/services/api_service.dart';
 
@@ -11,6 +12,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
   late Future<List<DeliveryTask>> _tasksFuture;
 
   @override
@@ -29,7 +31,7 @@ class _DashboardPageState extends State<DashboardPage> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              Navigator.pop(context);
+              _authService.signOut();
             },
           ),
         ],

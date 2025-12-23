@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logitrack_app/auth_service.dart';
+import 'package:logitrack_app/delivery_detail_page.dart';
 import 'package:logitrack_app/models/delivery_task_model.dart';
 import 'package:logitrack_app/services/api_service.dart';
 
@@ -63,6 +64,14 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     title: Text(task.title),
                     subtitle: Text('ID Tugas: ${task.id}'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DeliveryDetailPage(task: task),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
